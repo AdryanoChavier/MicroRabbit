@@ -1,13 +1,12 @@
 ﻿using MicroRabbit.Domain.Core.Events;
 
-namespace MicroRabbit.Domain.Core.Commands
+namespace MicroRabbit.Domain.Core.Commands;
+
+public abstract class Command : Message
 {
-    public abstract class Command : Message
+    public DateTime Timestamp { get; private set; }
+    protected Command()
     {
-        public DateTime Timestamp { get; private set; }
-        protected Command()
-        {
-            Timestamp = DateTime.Now;
-        }
+        Timestamp = DateTime.Now;
     }
 }
