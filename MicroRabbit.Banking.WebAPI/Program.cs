@@ -1,8 +1,9 @@
-using MicroRabbit.Infra.IoC;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi.Models;
+using MicroRabbit.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
 
 var assembly = typeof(Program).Assembly;
 
@@ -21,9 +22,21 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Banking MicroServices", Version = "v1" });
 });
-
-
 var app = builder.Build();
+
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -31,7 +44,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Banking MicroServices V1");
 });
 
-app.UseHttpsRedirection();
-app.UseRouting();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
